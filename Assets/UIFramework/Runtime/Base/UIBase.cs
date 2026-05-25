@@ -59,11 +59,13 @@ public class UIBase : MonoBehaviour
     }
     public virtual void OnClose()
     {
+        Debug.Log($"{name} OnClose");
         IsOpen = false;
         OnHide();
     }
     public virtual void OnHide()
     {
+        Debug.Log($"{name} OnHide");
         IsVisible = false;
         gameObject.SetActive(false); 
     }

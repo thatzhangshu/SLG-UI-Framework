@@ -1,22 +1,31 @@
 using UnityEngine;
 
 /// <summary>
-/// UI测试入口。
+/// UI 测试入口。
+/// 用于验证 UIManager 打开、关闭、缓存复用流程。
 /// </summary>
 public class UITestEntry : MonoBehaviour
 {
     [SerializeField]
     private MainHUD mainHUDPrefab;
+
     private MainHUD openedHUD;
+
     private void Start()
     {
         openedHUD = UIManager.Instance.OpenUI(mainHUDPrefab);
 
-        Invoke(nameof(CloseHUD), 3f);
+        Invoke(nameof(CloseMainHUD), 3f);
+        Invoke(nameof(ReopenMainHUD), 6f);
     }
 
-    private void CloseHUD()
+    private void CloseMainHUD()
     {
         UIManager.Instance.CloseUI(openedHUD);
+    }
+
+    private void ReopenMainHUD()
+    {
+        openedHUD = UIManager.Instance.OpenUI(mainHUDPrefab);
     }
 }

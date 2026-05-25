@@ -27,6 +27,13 @@ public class UIManager : MonoBehaviour
     /// Value：UI实例
     /// </summary>
     private readonly Dictionary<string, UIBase> openUIs = new();
+    
+    /// <summary>
+    /// 缓存UI字典。
+    /// Key：UI名称
+    /// Value：UI实例
+    /// </summary>
+    private readonly Dictionary<string, UIBase> cacheUIs = new();
 
     private void Awake()
     {
@@ -50,12 +57,23 @@ public class UIManager : MonoBehaviour
     public T OpenUI<T>(T uiPrefab) where T : UIBase
     {
         string uiName = uiPrefab.name;
-        /// <summary>
         /// 打开的单例直接返回
-        /// </summary>
-        if (uiPrefab.IsSingleton && openUIs.TryGetValue(uiName, out UIBase ui))
+        if (uiPrefab.IsSingleton && openUIs.TryGetValue(uiName, out UIBase openedUI))
         {
-            return ui as T;
+            return openedUI as T;
+        }
+        /// 缓存的直接打开
+        if (uiPrefab.ShouldCache && cacheUIs.TryGetValue(uiName, out UIBase cachedUI))
+        {
+
+            // 打开UI
+            cachedUI.OnOpen();
+
+            // 记录UI
+            openUIs[uiName] = cachedUI;
+
+            return cachedUI as T;
+            
         }
 
         // 实例化UI
@@ -72,6 +90,11 @@ public class UIManager : MonoBehaviour
 
         // 记录UI
         openUIs.Add(uiName, uiInstance);
+
+        if (uiPrefab.ShouldCache)
+        {
+            cacheUIs.Add(uiName,uiInstance);
+        }
 
         return uiInstance;
 
@@ -94,7 +117,9 @@ public class UIManager : MonoBehaviour
         openUIs.Remove(uiName);
 
         // 第一版先直接销毁
-        Destroy(ui.gameObject);
+        if (!ui.ShouldCache)
+        {
+            Destroy(ui.gameObject);
+        }
     }
-
 }
