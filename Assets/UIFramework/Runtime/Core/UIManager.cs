@@ -88,6 +88,11 @@ public class UIManager : MonoBehaviour
         // 打开UI
         uiInstance.OnOpen();
 
+        if (uiInstance.uiType == UIType.Popup)
+        {
+            uiRoot.PopupMask.Show(uiInstance);
+        }
+
         // 记录UI
         openUIs.Add(uiName, uiInstance);
 
@@ -113,6 +118,11 @@ public class UIManager : MonoBehaviour
         string uiName = ui.name.Replace("(Clone)", "");
 
         ui.OnClose();
+
+        if (ui.uiType == UIType.Popup)
+        {
+            uiRoot.PopupMask.Hide();
+        }
 
         openUIs.Remove(uiName);
 

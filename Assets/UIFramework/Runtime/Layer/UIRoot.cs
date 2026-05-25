@@ -10,6 +10,10 @@ using UnityEngine;
 /// </summary>
 public class UIRoot : MonoBehaviour
 {
+    [SerializeField]
+    private PopupMask popupMask;
+
+    public PopupMask PopupMask => popupMask;
     /// <summary>
     /// UI 层级映射表。
     /// Key：UILayer 枚举

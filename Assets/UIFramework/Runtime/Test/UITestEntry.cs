@@ -8,24 +8,32 @@ public class UITestEntry : MonoBehaviour
 {
     [SerializeField]
     private MainHUD mainHUDPrefab;
+    [SerializeField]
+    private ConfirmPopup confirmPopupPrefab;
 
     private MainHUD openedHUD;
-
+    private ConfirmPopup openedPopup;
     private void Start()
     {
         openedHUD = UIManager.Instance.OpenUI(mainHUDPrefab);
 
-        Invoke(nameof(CloseMainHUD), 3f);
-        Invoke(nameof(ReopenMainHUD), 6f);
+        Invoke(nameof(OpenPopup), 2f);
+        // Invoke(nameof(ClosePopup), 5f);
+        Invoke(nameof(ReopenPopup), 6f);
     }
 
-    private void CloseMainHUD()
+    private void OpenPopup()
     {
-        UIManager.Instance.CloseUI(openedHUD);
+        openedPopup = UIManager.Instance.OpenUI(confirmPopupPrefab);
     }
 
-    private void ReopenMainHUD()
+    private void ClosePopup()
     {
-        openedHUD = UIManager.Instance.OpenUI(mainHUDPrefab);
+        UIManager.Instance.CloseUI(openedPopup);
+    }
+
+    private void ReopenPopup()
+    {
+        openedPopup = UIManager.Instance.OpenUI(confirmPopupPrefab);
     }
 }
