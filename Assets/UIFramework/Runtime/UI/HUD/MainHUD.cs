@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIPopupBase : UIBase
+public class MainHUD : UIPanelBase
 {
-    // Start is called before the first frame update
+    /// <summary>
+    /// 主HUD界面。
+    /// </summary>
     void Start()
     {
         

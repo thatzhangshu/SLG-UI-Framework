@@ -25,6 +25,16 @@ public class UIRoot : MonoBehaviour
         layerRoots[layer] = root;
     }
     
+    public Transform GetLayerRoot(UILayer layer)
+    {
+        if (layerRoots.TryGetValue(layer, out Transform root))
+        {
+            return root;
+        }
+        Debug.LogError($"Layer root {layer} not found");
+        return null;
+    }
+
     private void InitLayerRoots()
     {
         layerRoots.Clear();

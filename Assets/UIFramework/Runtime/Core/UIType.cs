@@ -1,18 +1,76 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class UIType : MonoBehaviour
+/// <summary>
+/// UI类型枚举。
+/// 
+/// 用于区分不同类型的UI，
+/// 不同UI类型在：
+/// 1. 生命周期
+/// 2. 层级管理
+/// 3. 显示逻辑
+/// 4. 缓存策略
+/// 5. 输入响应
+/// 
+/// 上会存在差异。
+/// 
+/// </summary>
+public enum UIType
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    /// <summary>
+    /// 常驻HUD界面。但其实特定条件下也可以隐藏
+    /// 
+    /// 例如：
+    /// 主界面资源栏、
+    /// 底部菜单、
+    /// 活动入口。
+    /// 理论上说默认主界面HUD默认存在，但可能某些需求场景内也有自己的HUD
+    /// </summary>
+    HUD,
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    /// <summary>
+    /// 页面型UI。
+    /// 
+    /// 通常为全屏或半屏界面，
+    /// 支持UI栈与返回逻辑。
+    /// 
+    /// 例如：
+    /// 邮件、背包、武将界面、一些活动界面等等
+    /// </summary>
+    Panel,
+
+    /// <summary>
+    /// 弹窗型UI。
+    /// 
+    /// 通常位于高层级，
+    /// 带遮罩与弹窗动画。
+    /// 
+    /// 例如：
+    /// 确认框、奖励弹窗。
+    /// </summary>
+    Popup,
+
+    /// <summary>
+    /// 轻提示UI。
+    /// 
+    /// 生命周期较短，
+    /// 通常自动关闭，
+    /// 不阻断玩家操作。
+    /// 
+    /// 例如：
+    /// “资源不足”
+    /// “获得奖励”
+    /// 实际项目中是一种最简单最常用的文本弹窗 自动出现消失 不会阻塞玩家操作
+    /// </summary>
+    Toast,
+
+    /// <summary>
+    /// 世界空间UI。
+    /// 
+    /// 通常挂载于World Space Canvas，
+    /// 跟随地图对象移动。
+    /// 
+    /// 例如：
+    /// 城池名牌、
+    /// 行军队伍名牌、
+    /// 血条。
+    /// </summary>
+    World
 }

@@ -29,11 +29,13 @@ public class UIBase : MonoBehaviour
     public bool IsOpen { get; private set; }
     
     public virtual void OnInit()
-    {
+    {   
+        Debug.Log($"{name} OnInit");
         IsInitialized = true;
     }
     public virtual void OnOpen()
     {
+        Debug.Log($"{name} OnOpen");
         if (!IsInitialized)
         {
             OnInit();
@@ -43,6 +45,7 @@ public class UIBase : MonoBehaviour
     }
     public virtual void OnShow()
     {
+        Debug.Log($"{name} OnShow");
         IsVisible = true;
         gameObject.SetActive(true); 
         if (NeedPlayOpenAnimation)
