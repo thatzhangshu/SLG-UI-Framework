@@ -60,12 +60,19 @@ public class UIManager : MonoBehaviour
         /// 打开的单例直接返回
         if (uiPrefab.IsSingleton && openUIs.TryGetValue(uiName, out UIBase openedUI))
         {
+            if (openedUI.uiType == UIType.Popup)
+            {
+                uiRoot.PopupMask.Show(openedUI);
+            }
             return openedUI as T;
         }
         /// 缓存的直接打开
         if (uiPrefab.ShouldCache && cacheUIs.TryGetValue(uiName, out UIBase cachedUI))
         {
-
+            if (cachedUI.uiType == UIType.Popup)
+            {
+                uiRoot.PopupMask.Show(cachedUI);
+            }
             // 打开UI
             cachedUI.OnOpen();
 
@@ -132,4 +139,5 @@ public class UIManager : MonoBehaviour
             Destroy(ui.gameObject);
         }
     }
+
 }
