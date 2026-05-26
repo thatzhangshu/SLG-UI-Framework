@@ -1023,6 +1023,8 @@ MonoBehaviour:
     type: 3}
   confirmPopupPrefab: {fileID: 5635692262471403542, guid: 4e3b16545ef884d419456554159e78dd,
     type: 3}
+  rewardPopupPrefab: {fileID: 7334718624146484751, guid: c7f984ccc7f353e46b33853beb8c03e3,
+    type: 3}
 --- !u!4 &1227796749
 Transform:
   m_ObjectHideFlags: 0

@@ -35,6 +35,11 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private readonly Dictionary<string, UIBase> cacheUIs = new();
 
+    /// <summary>
+    /// pop类弹窗的管理栈
+    /// </summary>
+    private readonly Stack<UIBase> popupStack = new();
+
     private void Awake()
     {
         Init();
@@ -56,31 +61,37 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public T OpenUI<T>(T uiPrefab) where T : UIBase
     {
+        if (uiPrefab == null)
+        {
+            Debug.LogError("OpenUI 失败：uiPrefab 为空");
+            return null;
+        }
+
         string uiName = uiPrefab.name;
-        /// 打开的单例直接返回
+
+        //打开的单例直接返回
         if (uiPrefab.IsSingleton && openUIs.TryGetValue(uiName, out UIBase openedUI))
         {
             if (openedUI.uiType == UIType.Popup)
             {
-                uiRoot.PopupMask.Show(openedUI);
+                BringPopupToTop(openedUI);
             }
             return openedUI as T;
         }
         /// 缓存的直接打开
         if (uiPrefab.ShouldCache && cacheUIs.TryGetValue(uiName, out UIBase cachedUI))
         {
-            if (cachedUI.uiType == UIType.Popup)
-            {
-                uiRoot.PopupMask.Show(cachedUI);
-            }
-            // 打开UI
             cachedUI.OnOpen();
 
-            // 记录UI
             openUIs[uiName] = cachedUI;
 
-            return cachedUI as T;
-            
+            if (cachedUI.uiType == UIType.Popup)
+            {
+                PushPopup(cachedUI);
+            }
+            // 打开UI
+
+            return cachedUI as T;  
         }
 
         // 实例化UI
@@ -95,17 +106,17 @@ public class UIManager : MonoBehaviour
         // 打开UI
         uiInstance.OnOpen();
 
-        if (uiInstance.uiType == UIType.Popup)
-        {
-            uiRoot.PopupMask.Show(uiInstance);
-        }
-
         // 记录UI
         openUIs.Add(uiName, uiInstance);
 
         if (uiPrefab.ShouldCache)
         {
             cacheUIs.Add(uiName,uiInstance);
+        }
+
+        if (uiInstance.uiType == UIType.Popup)
+        {
+            PushPopup(uiInstance);
         }
 
         return uiInstance;
@@ -128,7 +139,7 @@ public class UIManager : MonoBehaviour
 
         if (ui.uiType == UIType.Popup)
         {
-            uiRoot.PopupMask.Hide();
+            RemovePopup(ui);
         }
 
         openUIs.Remove(uiName);
@@ -138,6 +149,78 @@ public class UIManager : MonoBehaviour
         {
             Destroy(ui.gameObject);
         }
+    }
+
+    /// <summary>
+    /// 打开popup类弹窗 并且压入栈内
+    /// </summary>
+    public void PushPopup(UIBase popup)
+    {
+        if (!popup)
+        {
+            return;
+        }
+        popupStack.Push(popup);
+
+        uiRoot.PopupMask.Show(popup);
+
+        // 确保 Popup 显示在 Mask 上方。
+        popup.transform.SetAsLastSibling();
+
+    }
+
+    /// <summary>
+    /// 从 Popup 栈中移除指定 Popup。
+    /// </summary>
+    private void RemovePopup(UIBase popup)
+    {
+        if (popup == null)
+        {
+            return;
+        }
+
+        // Stack 不支持直接移除中间元素，所以这里重建一次。
+        Stack<UIBase> tempStack = new Stack<UIBase>();
+
+        while (popupStack.Count > 0)
+        {
+            UIBase top = popupStack.Pop();
+
+            if (top != popup)
+            {
+                tempStack.Push(top);
+            }
+        }
+
+        while (tempStack.Count > 0)
+        {
+            popupStack.Push(tempStack.Pop());
+        }
+
+        if (popupStack.Count > 0)
+        {
+            UIBase topPopup = popupStack.Peek();
+            uiRoot.PopupMask.Show(topPopup);
+            topPopup.transform.SetAsLastSibling();
+        }
+        else
+        {
+            uiRoot.PopupMask.Hide();
+        }
+    }
+
+    /// <summary>
+    /// 将已打开的 Popup 提到最上层 不入栈
+    /// </summary>
+    private void BringPopupToTop(UIBase popup)
+    {
+        if (popup == null)
+        {
+            return;
+        }
+
+        uiRoot.PopupMask.Show(popup);
+        popup.transform.SetAsLastSibling();
     }
 
 }
