@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// UI 测试入口。
-/// 用于验证 HUD、Popup、PopupMask、PopupStack。
+/// 用于验证 HUD、Panel、Popup 的基础流程。
 /// </summary>
 public class UITestEntry : MonoBehaviour
 {
@@ -10,17 +10,23 @@ public class UITestEntry : MonoBehaviour
     private MainHUD mainHUDPrefab;
 
     [SerializeField]
-    private ConfirmPopup confirmPopupPrefab;
+    private MailPanel mailPanelPrefab;
 
     [SerializeField]
-    private RewardPopup rewardPopupPrefab;
+    private ConfirmPopup confirmPopupPrefab;
 
     private void Start()
     {
         UIManager.Instance.OpenUI(mainHUDPrefab);
 
-        Invoke(nameof(OpenConfirmPopup), 2f);
-        Invoke(nameof(OpenRewardPopup), 4f);
+        Invoke(nameof(OpenMailPanel), 2f);
+        Invoke(nameof(OpenConfirmPopup), 4f);
+        Invoke(nameof(BackPanel), 7f);
+    }
+
+    private void OpenMailPanel()
+    {
+        UIManager.Instance.OpenUI(mailPanelPrefab);
     }
 
     private void OpenConfirmPopup()
@@ -28,8 +34,8 @@ public class UITestEntry : MonoBehaviour
         UIManager.Instance.OpenUI(confirmPopupPrefab);
     }
 
-    private void OpenRewardPopup()
+    private void BackPanel()
     {
-        UIManager.Instance.OpenUI(rewardPopupPrefab);
+        UIManager.Instance.Back();
     }
 }

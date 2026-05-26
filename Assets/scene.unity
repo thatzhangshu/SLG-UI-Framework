@@ -96,7 +96,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 0b4c037ec2faa874ab60ff4bd1dc8092,
+    type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -1021,9 +1022,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainHUDPrefab: {fileID: 481524315275441075, guid: 15b8c136804bb6542b9c458b5446db0f,
     type: 3}
-  confirmPopupPrefab: {fileID: 5635692262471403542, guid: 4e3b16545ef884d419456554159e78dd,
+  mailPanelPrefab: {fileID: 3827327849948848583, guid: 92cd84096c318974f8ae7c2931b91101,
     type: 3}
-  rewardPopupPrefab: {fileID: 7334718624146484751, guid: c7f984ccc7f353e46b33853beb8c03e3,
+  confirmPopupPrefab: {fileID: 5635692262471403542, guid: 4e3b16545ef884d419456554159e78dd,
     type: 3}
 --- !u!4 &1227796749
 Transform:

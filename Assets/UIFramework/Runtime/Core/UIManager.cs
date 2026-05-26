@@ -40,6 +40,11 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private readonly Stack<UIBase> popupStack = new();
 
+    /// <summary>
+    /// panel类界面管理栈
+    /// </summary>
+    private readonly Stack<UIBase> panelStack = new();
+
     private void Awake()
     {
         Init();
@@ -76,6 +81,10 @@ public class UIManager : MonoBehaviour
             {
                 BringPopupToTop(openedUI);
             }
+            if (openedUI.uiType == UIType.Panel)
+            {
+                PushPanel(openedUI);
+            }
             return openedUI as T;
         }
         /// 缓存的直接打开
@@ -89,7 +98,10 @@ public class UIManager : MonoBehaviour
             {
                 PushPopup(cachedUI);
             }
-            // 打开UI
+            if (cachedUI.uiType == UIType.Panel)
+            {
+                PushPanel(cachedUI);
+            }
 
             return cachedUI as T;  
         }
@@ -107,16 +119,21 @@ public class UIManager : MonoBehaviour
         uiInstance.OnOpen();
 
         // 记录UI
-        openUIs.Add(uiName, uiInstance);
+        openUIs[uiName] = uiInstance;
 
         if (uiPrefab.ShouldCache)
         {
-            cacheUIs.Add(uiName,uiInstance);
+            cacheUIs[uiName] = uiInstance;
         }
 
         if (uiInstance.uiType == UIType.Popup)
         {
             PushPopup(uiInstance);
+        }
+
+        if (uiInstance.uiType == UIType.Panel)
+        {
+            PushPanel(uiInstance);
         }
 
         return uiInstance;
@@ -142,6 +159,11 @@ public class UIManager : MonoBehaviour
             RemovePopup(ui);
         }
 
+        if (ui.uiType == UIType.Panel)
+        {
+            RemovePanel(ui);
+        }
+
         openUIs.Remove(uiName);
 
         // 第一版先直接销毁
@@ -160,6 +182,8 @@ public class UIManager : MonoBehaviour
         {
             return;
         }
+        RemovePopupWithoutMaskRefresh(popup);
+
         popupStack.Push(popup);
 
         uiRoot.PopupMask.Show(popup);
@@ -167,6 +191,27 @@ public class UIManager : MonoBehaviour
         // 确保 Popup 显示在 Mask 上方。
         popup.transform.SetAsLastSibling();
 
+    }
+
+    /// <summary>
+    /// 打开panel类界面 并且压入栈内
+    /// </summary>
+    public void PushPanel(UIBase panel)
+    {
+        if (!panel)
+        {
+            return;
+        }
+        if (panelStack.Contains(panel))
+        {
+            return;
+        }
+
+        panelStack.Push(panel);
+
+        Debug.Log(panel.name);
+
+        panel.transform.SetAsLastSibling();
     }
 
     /// <summary>
@@ -210,6 +255,51 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 从 Panel 栈中移除指定页面。
+    /// </summary>
+    private void RemovePanel(UIBase panel)
+    {
+        if (panel == null)
+        {
+            return;
+        }
+
+        Stack<UIBase> tempStack = new Stack<UIBase>();
+
+        while (panelStack.Count > 0)
+        {
+            UIBase top = panelStack.Pop();
+
+            if (top != panel)
+            {
+                tempStack.Push(top);
+            }
+        }
+
+        while (tempStack.Count > 0)
+        {
+            panelStack.Push(tempStack.Pop());
+        }
+    }
+
+    /// <summary>
+    /// 返回上一层 Panel。
+    /// 第一版逻辑：关闭当前栈顶 Panel。
+    /// </summary>
+    public void Back()
+    {
+        if (panelStack.Count == 0)
+        {
+            Debug.Log("当前没有可返回的 Panel");
+            return;
+        }
+
+        UIBase topPanel = panelStack.Peek();
+
+        CloseUI(topPanel);
+    }
+
+    /// <summary>
     /// 将已打开的 Popup 提到最上层 不入栈
     /// </summary>
     private void BringPopupToTop(UIBase popup)
@@ -218,9 +308,30 @@ public class UIManager : MonoBehaviour
         {
             return;
         }
+        RemovePopupWithoutMaskRefresh(popup);
 
+        popupStack.Push(popup);
         uiRoot.PopupMask.Show(popup);
         popup.transform.SetAsLastSibling();
     }
 
+    private void RemovePopupWithoutMaskRefresh(UIBase popup)
+    {
+        Stack<UIBase> tempStack = new Stack<UIBase>();
+
+        while (popupStack.Count > 0)
+        {
+            UIBase top = popupStack.Pop();
+
+            if (top != popup)
+            {
+                tempStack.Push(top);
+            }
+        }
+
+        while (tempStack.Count > 0)
+        {
+            popupStack.Push(tempStack.Pop());
+        }
+    }
 }
