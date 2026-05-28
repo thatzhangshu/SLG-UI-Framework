@@ -2,40 +2,24 @@ using UnityEngine;
 
 /// <summary>
 /// UI 测试入口。
-/// 用于验证 HUD、Panel、Popup 的基础流程。
+/// 当前阶段只负责打开 MainHUD。
+/// 后续具体页面由 MainHUD 按钮触发。
 /// </summary>
 public class UITestEntry : MonoBehaviour
 {
     [SerializeField]
     private MainHUD mainHUDPrefab;
 
-    [SerializeField]
-    private MailPanel mailPanelPrefab;
-
-    [SerializeField]
-    private ConfirmPopup confirmPopupPrefab;
-
     private void Start()
     {
         UIManager.Instance.OpenUI(mainHUDPrefab);
-
-        Invoke(nameof(OpenMailPanel), 2f);
-        Invoke(nameof(OpenConfirmPopup), 4f);
-        Invoke(nameof(BackPanel), 7f);
     }
 
-    private void OpenMailPanel()
+    private void Update()
     {
-        UIManager.Instance.OpenUI(mailPanelPrefab);
-    }
-
-    private void OpenConfirmPopup()
-    {
-        UIManager.Instance.OpenUI(confirmPopupPrefab);
-    }
-
-    private void BackPanel()
-    {
-        UIManager.Instance.Back();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIManager.Instance.Back();
+        }
     }
 }
