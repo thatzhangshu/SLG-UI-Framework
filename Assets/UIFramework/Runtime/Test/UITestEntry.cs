@@ -15,11 +15,4 @@ public class UITestEntry : MonoBehaviour
         UIManager.Instance.OpenUI(mainHUDPrefab);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            UIManager.Instance.Back();
-        }
-    }
 }

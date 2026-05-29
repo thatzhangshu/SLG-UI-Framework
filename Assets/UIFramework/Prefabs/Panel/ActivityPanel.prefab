@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.14150941, g: 0.07008721, b: 0.07008721, a: 0.392}
+  m_Color: {r: 0.6603774, g: 0.40806338, b: 0.40806338, a: 0.392}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -208,9 +208,9 @@ GameObject:
   - component: {fileID: 1761397111497706669}
   - component: {fileID: 3413026728921739826}
   - component: {fileID: 4466103525614794321}
-  - component: {fileID: 6700619933180374275}
+  - component: {fileID: -5312095691102172811}
   m_Layer: 5
-  m_Name: HeroPanel
+  m_Name: ActivityPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -256,7 +256,7 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &6700619933180374275
+--- !u!114 &-5312095691102172811
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -265,7 +265,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5038158279101396326}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da6166da2e09765459293b2e5d1bf126, type: 3}
+  m_Script: {fileID: 11500000, guid: 3abdfad2d3c4f2940b5b216279051f6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   uiType: 1
