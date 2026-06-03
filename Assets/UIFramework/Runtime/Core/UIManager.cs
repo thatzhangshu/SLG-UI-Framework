@@ -64,7 +64,7 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// 打开UI。
     /// </summary>
-    public T OpenUI<T>(T uiPrefab) where T : UIBase
+    public T OpenUI<T>(T uiPrefab, object data) where T : UIBase
     {
         if (uiPrefab == null)
         {
@@ -74,23 +74,28 @@ public class UIManager : MonoBehaviour
 
         string uiName = uiPrefab.name;
 
-        //打开的单例直接返回
+        // 打开的单例直接返回
         if (uiPrefab.IsSingleton && openUIs.TryGetValue(uiName, out UIBase openedUI))
         {
+            openedUI.OnOpen(data);
+
             if (openedUI.uiType == UIType.Popup)
             {
                 BringPopupToTop(openedUI);
             }
+
             if (openedUI.uiType == UIType.Panel)
             {
                 PushPanel(openedUI);
             }
+
             return openedUI as T;
         }
-        /// 缓存的直接打开
+
+        // 缓存的直接打开
         if (uiPrefab.ShouldCache && cacheUIs.TryGetValue(uiName, out UIBase cachedUI))
         {
-            cachedUI.OnOpen();
+            cachedUI.OnOpen(data);
 
             openUIs[uiName] = cachedUI;
 
@@ -98,30 +103,26 @@ public class UIManager : MonoBehaviour
             {
                 PushPopup(cachedUI);
             }
+
             if (cachedUI.uiType == UIType.Panel)
             {
                 PushPanel(cachedUI);
             }
 
-            return cachedUI as T;  
+            return cachedUI as T;
         }
 
-        // 实例化UI
+        // 实例化 UI
         T uiInstance = Instantiate(uiPrefab);
 
-        // 获取对应Layer
         Transform parent = uiRoot.GetLayerRoot(uiInstance.uiLayer);
-
-        // 挂到对应层级
         uiInstance.transform.SetParent(parent, false);
 
-        // 打开UI
-        uiInstance.OnOpen();
+        uiInstance.OnOpen(data);
 
-        // 记录UI
         openUIs[uiName] = uiInstance;
 
-        if (uiPrefab.ShouldCache)
+        if (uiInstance.ShouldCache)
         {
             cacheUIs[uiName] = uiInstance;
         }
@@ -137,9 +138,13 @@ public class UIManager : MonoBehaviour
         }
 
         return uiInstance;
-
     }
 
+    public T OpenUI<T>(T uiPrefab) where T : UIBase
+    {
+        return OpenUI(uiPrefab, null);
+    }
+    
     /// <summary>
     /// 关闭UI。
     /// </summary>

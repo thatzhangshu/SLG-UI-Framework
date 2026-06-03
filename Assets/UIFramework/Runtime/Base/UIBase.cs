@@ -33,6 +33,9 @@ public class UIBase : MonoBehaviour
         Debug.Log($"{name} OnInit");
         IsInitialized = true;
     }
+    /// <summary>
+    /// 打开无参数版本
+    /// </summary>
     public virtual void OnOpen()
     {
         Debug.Log($"{name} OnOpen");
@@ -43,6 +46,15 @@ public class UIBase : MonoBehaviour
         IsOpen = true;
         OnShow();
     }
+    /// <summary>
+    /// 打开有参数版本
+    /// </summary>
+    /// <param name="data"></param>
+    public virtual void OnOpen(object data)
+    {
+        OnOpen();
+    }
+
     public virtual void OnShow()
     {
         Debug.Log($"{name} OnShow");
