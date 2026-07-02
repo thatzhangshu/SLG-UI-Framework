@@ -763,6 +763,8 @@ MonoBehaviour:
   heroContentRoot: {fileID: 8340277022926849488}
   heroCardItemPrefab: {fileID: 3804703564121229054, guid: 375fc0af39dadc7459ee34ad455c7f14,
     type: 3}
+  heroDetailPanelPrefab: {fileID: 6310305296617357790, guid: 52496dcdf375f2e4c9ef68368bf513b7,
+    type: 3}
 --- !u!1 &6014024655206488429
 GameObject:
   m_ObjectHideFlags: 0

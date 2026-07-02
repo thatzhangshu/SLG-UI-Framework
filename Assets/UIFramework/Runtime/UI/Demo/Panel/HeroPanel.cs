@@ -13,7 +13,10 @@ public class HeroPanel : UIPanelBase
     [Header("Hero List")]
     [SerializeField] private ScrollRect heroScrollRect;
     [SerializeField] private Transform heroContentRoot;
-    [SerializeField] private HeroCardItem  heroCardItemPrefab;
+    [SerializeField] private HeroCardItem heroCardItemPrefab;
+
+    [Header("Popup Prefabs")]
+    [SerializeField] private HeroDetailPanel heroDetailPanelPrefab;
 
     private readonly List<HeroData> heroDataList = new List<HeroData>();
     private readonly List<HeroCardItem> heroCardItemList = new List<HeroCardItem>();
@@ -122,6 +125,7 @@ public class HeroPanel : UIPanelBase
 
     private void OnClickHeroItem(HeroData data)
     {
-        Debug.Log($"点击武将：{data.heroId} - {data.heroName}");
+        // Debug.Log($"点击武将：{data.heroId} - {data.heroName}");
+        UIManager.Instance.OpenUI(heroDetailPanelPrefab, data);
     }
 }

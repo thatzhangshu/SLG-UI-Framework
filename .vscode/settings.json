@@ -1,0 +1,28 @@
+{
+  "dotnet.defaultSolution": "SLG-UI-Framework.sln",
+  "dotnet.preferCSharpExtension": true,
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/.vs": true,
+    "**/.gitmodules": true,
+    "**/*.booproj": true,
+    "**/*.pidb": true,
+    "**/*.suo": true,
+    "**/*.user": true,
+    "**/*.userprefs": true,
+    "**/*.unityproj": true,
+    "**/*.dll": true,
+    "**/*.exe": true,
+    "**/*.pdf": true,
+    "**/*.mid": true,
+    "**/*.video": true,
+    "**/*.meta": true,
+    "**/*.prefab": true,
+    "**/*.unity": true,
+    "**/Library": true,
+    "**/Temp": true,
+    "**/Obj": true,
+    "**/Logs": true
+  }
+}
