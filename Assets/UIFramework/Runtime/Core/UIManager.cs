@@ -77,6 +77,11 @@ public class UIManager : MonoBehaviour
         // 打开的单例直接返回
         if (uiPrefab.IsSingleton && openUIs.TryGetValue(uiName, out UIBase openedUI))
         {
+            if (openedUI.IsAnimating)
+            {
+                return openedUI as T;
+            }
+
             openedUI.OnOpen(data);
 
             if (openedUI.uiType == UIType.Popup)
@@ -95,6 +100,13 @@ public class UIManager : MonoBehaviour
         // 缓存的直接打开
         if (uiPrefab.ShouldCache && cacheUIs.TryGetValue(uiName, out UIBase cachedUI))
         {
+            if (cachedUI.IsAnimating)
+            {
+                return cachedUI as T;
+            }
+
+            cachedUI.gameObject.SetActive(true);
+
             cachedUI.OnOpen(data);
 
             openUIs[uiName] = cachedUI;
@@ -108,6 +120,8 @@ public class UIManager : MonoBehaviour
             {
                 PushPanel(cachedUI);
             }
+
+            cachedUI.PlayOpenAnimation();
 
             return cachedUI as T;
         }
@@ -136,6 +150,8 @@ public class UIManager : MonoBehaviour
         {
             PushPanel(uiInstance);
         }
+        
+        uiInstance.PlayOpenAnimation();
 
         return uiInstance;
     }
@@ -149,6 +165,24 @@ public class UIManager : MonoBehaviour
     /// 关闭UI。
     /// </summary>
     public void CloseUI(UIBase ui)
+    {
+        if (ui == null)
+        {
+            return;
+        }
+
+        if (ui.IsAnimating)
+        {
+            return;
+        }
+
+        ui.PlayCloseAnimation(() =>
+        {
+            CloseUIImmediately(ui);
+        });
+    }
+
+    private void CloseUIImmediately(UIBase ui)
     {
         if (ui == null)
         {
@@ -171,9 +205,22 @@ public class UIManager : MonoBehaviour
 
         openUIs.Remove(uiName);
 
-        // 第一版先直接销毁
-        if (!ui.ShouldCache)
+        if (ui.ShouldCache)
         {
+            ui.gameObject.SetActive(false);
+
+            if (cacheUIs.ContainsKey(uiName))
+            {
+                cacheUIs[uiName] = ui;
+            }
+            else
+            {
+                cacheUIs.Add(uiName, ui);
+            }
+        }
+        else
+        {
+            ui.OnDestroy();
             Destroy(ui.gameObject);
         }
     }

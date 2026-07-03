@@ -1,11 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class UIBase : MonoBehaviour
 {
     public UIType uiType;
     public UILayer uiLayer;
+
+    [Header("Animation")]
+    [SerializeField] private float openAnimationDuration = 0.15f;
+    [SerializeField] private float closeAnimationDuration = 0.12f;
+    [SerializeField] private bool useScaleAnimation = true;
+
+    private CanvasGroup canvasGroup;
+    private Coroutine animationCoroutine;
+    private Vector3 originScale;
 
     /// <summary>
     /// 是否为单例UI。
@@ -65,10 +75,172 @@ public class UIBase : MonoBehaviour
             PlayOpenAnimation();
         }
     }
-    public virtual void PlayOpenAnimation()
+
+    public virtual void EnsureCanvasGroup()
     {
-        //TODO: 播放打开动画
+        if (canvasGroup == null)
+        {
+            canvasGroup = GetComponent<CanvasGroup>();
+
+            if (canvasGroup == null)
+            {
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            }
+        }
+
+        if (originScale == Vector3.zero)
+        {
+            originScale = transform.localScale;
+        }
     }
+
+    public virtual void PlayOpenAnimation(Action onComplete = null)
+    {
+        EnsureCanvasGroup();
+
+        if (animationCoroutine != null)
+        {
+            StopCoroutine(animationCoroutine);
+            animationCoroutine = null;
+        }
+        
+        gameObject.SetActive(true);
+
+        IsAnimating = true;
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.interactable = false;
+
+        if (!NeedPlayOpenAnimation || openAnimationDuration <= 0f)
+        {
+            IsAnimating = false;
+            canvasGroup.blocksRaycasts = true;
+            canvasGroup.interactable = true;
+            onComplete?.Invoke();
+            return;
+        }
+
+        animationCoroutine = StartCoroutine(PlayOpenAnimationCoroutine(onComplete));
+    }
+
+    private IEnumerator PlayOpenAnimationCoroutine(Action onComplete)
+    {
+        float timer = 0f;
+
+        canvasGroup.alpha = 0f;
+
+        bool shouldScale =
+            useScaleAnimation &&
+            uiType == UIType.Popup;
+
+        if (shouldScale)
+        {
+            transform.localScale = originScale * 0.95f;
+        }
+        else
+        {
+            transform.localScale = originScale;
+        }
+
+        while (timer < openAnimationDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+
+            float t = Mathf.Clamp01(timer / openAnimationDuration);
+
+            canvasGroup.alpha = Mathf.Lerp(0f, 1f, t);
+
+            if (shouldScale)
+            {
+                transform.localScale = Vector3.Lerp(originScale * 0.95f, originScale, t);
+            }
+
+            yield return null;
+        }
+
+        canvasGroup.alpha = 1f;
+        transform.localScale = originScale;
+
+        IsAnimating = false;
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
+
+        animationCoroutine = null;
+
+        onComplete?.Invoke();
+    }
+
+    public void PlayCloseAnimation(Action onComplete)
+    {
+        EnsureCanvasGroup();
+
+        if (!gameObject.activeInHierarchy)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        if (animationCoroutine != null)
+        {
+            StopCoroutine(animationCoroutine);
+            animationCoroutine = null;
+        }
+
+        IsAnimating = true;
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+
+        if (!NeedPlayOpenAnimation || closeAnimationDuration <= 0f)
+        {
+            IsAnimating = false;
+            onComplete?.Invoke();
+            return;
+        }
+
+        animationCoroutine = StartCoroutine(PlayCloseAnimationCoroutine(onComplete));
+    }
+
+    private IEnumerator PlayCloseAnimationCoroutine(Action onComplete)
+    {
+        float timer = 0f;
+
+        float startAlpha = canvasGroup.alpha;
+
+        bool shouldScale =
+            useScaleAnimation &&
+            uiType == UIType.Popup;
+
+        Vector3 startScale = transform.localScale;
+        Vector3 endScale = originScale * 0.95f;
+
+        while (timer < closeAnimationDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+
+            float t = Mathf.Clamp01(timer / closeAnimationDuration);
+
+            canvasGroup.alpha = Mathf.Lerp(startAlpha, 0f, t);
+
+            if (shouldScale)
+            {
+                transform.localScale = Vector3.Lerp(startScale, endScale, t);
+            }
+
+            yield return null;
+        }
+
+        canvasGroup.alpha = 0f;
+
+        if (shouldScale)
+        {
+            transform.localScale = originScale;
+        }
+
+        IsAnimating = false;
+        animationCoroutine = null;
+
+        onComplete?.Invoke();
+    }
+    
     public virtual void OnClose()
     {
         Debug.Log($"{name} OnClose");

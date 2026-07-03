@@ -73,8 +73,6 @@ public class HeroCardItem : MonoBehaviour
             txtHeroCamp.text = heroData.heroCamp;
         }
 
-
-
     }
 
     private void OnDestroy()
