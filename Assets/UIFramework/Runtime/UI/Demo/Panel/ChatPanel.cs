@@ -105,7 +105,7 @@ public class ChatPanel : UIPanelBase
 
         if (string.IsNullOrEmpty(content))
         {
-            Debug.Log("聊天内容为空");
+            UIManager.Instance.ShowToast("请输入聊天内容");
             return;
         }
 

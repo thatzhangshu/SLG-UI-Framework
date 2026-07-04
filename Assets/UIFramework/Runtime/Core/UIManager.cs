@@ -21,6 +21,9 @@ public class UIManager : MonoBehaviour
     /// </summary>
     [SerializeField] private UIRoot uiRoot;
 
+    [Header("Common UI")]
+    [SerializeField] private Toast toastPrefab;
+
     /// <summary>
     /// 当前已打开UI字典。
     /// Key：UI名称
@@ -385,5 +388,16 @@ public class UIManager : MonoBehaviour
         {
             popupStack.Push(tempStack.Pop());
         }
+    }
+
+    public void ShowToast(string message, float duration = 1.5f)
+    {
+        if (toastPrefab == null)
+        {
+            Debug.LogError("ShowToast 失败：toastPrefab 为空");
+            return;
+        }
+
+        OpenUI(toastPrefab, new ToastData(message, duration));
     }
 }

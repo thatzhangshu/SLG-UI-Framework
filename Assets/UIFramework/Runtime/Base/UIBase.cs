@@ -13,6 +13,10 @@ public class UIBase : MonoBehaviour
     [SerializeField] private float closeAnimationDuration = 0.12f;
     [SerializeField] private bool useScaleAnimation = true;
 
+    [Header("Interaction")]
+    [SerializeField] private bool blockRaycastsWhenVisible = true;
+    [SerializeField] private bool interactableWhenVisible = true;
+
     private CanvasGroup canvasGroup;
     private Coroutine animationCoroutine;
     private Vector3 originScale;
@@ -113,8 +117,8 @@ public class UIBase : MonoBehaviour
         if (!NeedPlayOpenAnimation || openAnimationDuration <= 0f)
         {
             IsAnimating = false;
-            canvasGroup.blocksRaycasts = true;
-            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = blockRaycastsWhenVisible;
+            canvasGroup.interactable = interactableWhenVisible;
             onComplete?.Invoke();
             return;
         }
@@ -161,8 +165,8 @@ public class UIBase : MonoBehaviour
         transform.localScale = originScale;
 
         IsAnimating = false;
-        canvasGroup.interactable = true;
-        canvasGroup.blocksRaycasts = true;
+        canvasGroup.interactable = interactableWhenVisible;
+        canvasGroup.blocksRaycasts = blockRaycastsWhenVisible;
 
         animationCoroutine = null;
 
