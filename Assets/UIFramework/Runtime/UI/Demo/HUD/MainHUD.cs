@@ -75,7 +75,19 @@ public class MainHUD : UIBase
 
     private void OnClickActivity()
     {
-        UIManager.Instance.OpenUI(activityPanel);
+        // UIManager.Instance.OpenUI(activityPanel);
+        UIManager.Instance.ShowConfirm(
+        "确认操作",
+        "是否执行这个测试操作？",
+        () =>
+        {
+            UIManager.Instance.ShowToast("点击了确认");
+        },
+        () =>
+        {
+            UIManager.Instance.ShowToast("点击了取消");
+        }
+        );
     }
 
     private void OnClickBack()

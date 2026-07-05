@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Common UI")]
     [SerializeField] private Toast toastPrefab;
+    [SerializeField] private ConfirmPopup confirmPopupPrefab;
 
     /// <summary>
     /// 当前已打开UI字典。
@@ -399,5 +401,36 @@ public class UIManager : MonoBehaviour
         }
 
         OpenUI(toastPrefab, new ToastData(message, duration));
+    }
+
+    public void ShowConfirm(ConfirmPopupData data)
+    {
+        if (confirmPopupPrefab == null)
+        {
+            Debug.LogError("ShowConfirm 失败：confirmPopupPrefab 为空");
+            return;
+        }
+
+        OpenUI(confirmPopupPrefab, data);
+    }
+
+    public void ShowConfirm(
+        string title,
+        string content,
+        Action onConfirm = null,
+        Action onCancel = null,
+        string confirmText = "确认",
+        string cancelText = "取消")
+    {
+        ConfirmPopupData data = new ConfirmPopupData(
+            title,
+            content,
+            onConfirm,
+            onCancel,
+            confirmText,
+            cancelText
+        );
+
+        ShowConfirm(data);
     }
 }
