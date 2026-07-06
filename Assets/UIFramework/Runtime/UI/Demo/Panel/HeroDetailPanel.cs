@@ -45,66 +45,32 @@ public class HeroDetailPanel : UIPanelBase
             return;
         }
 
-        // HeroConfig config = ConfigManager.GetHeroConfig(currentHeroData.heroId);
+        HeroConfig heroConfig = ConfigManager.GetHeroConfig(currentHeroData.heroId);
 
-        // if (config == null)
-        // {
-        //     Debug.LogWarning($"HeroDetailPanel 打开失败：HeroConfig 未找到，heroId = {currentHeroData.heroId}");
-        //     return;
-        // }
-
-        // if (txtName != null)
-        // {
-        //     txtName.text = TextManager.GetText(config.nameTextId);
-        // }
-
-        // if (txtLevel != null)
-        // {
-        //     txtLevel.text = $"{TextManager.GetText("UI_LEVEL")}：{currentHeroData.level}";
-        // }
-
-        // if (txtRarity != null)
-        // {
-        //     txtRarity.text = $"{TextManager.GetText("UI_RARITY")}：{TextManager.GetText(config.rarityTextId)}";
-        // }
-
-        // if (txtSoldierType != null)
-        // {
-        //     txtSoldierType.text = $"{TextManager.GetText("UI_SOLDIER_TYPE")}：{TextManager.GetText(config.soldierTypeTextId)}";
-        // }
-
-        // if (txtPower != null)
-        // {
-        //     txtPower.text = $"{TextManager.GetText("UI_POWER")}：{currentHeroData.power}";
-        // }
-
-        // if (txtDesc != null)
-        // {
-        //     txtDesc.text = TextManager.GetText(config.descTextId);
-        // }
-        if (currentHeroData == null)
+        if (heroConfig == null)
         {
+            Debug.LogWarning($"HeroDetailPanel 打开失败：HeroConfig 未找到，heroId = {currentHeroData.heroId}");
             return;
         }
 
         if (txtName != null)
         {
-            txtName.text = currentHeroData.heroName;
+            txtName.text = TextManager.GetText(heroConfig.nameTextId);
         }
 
         if (txtLevel != null)
         {
-            txtLevel.text = $"Lv.{currentHeroData.heroLevel}";
+            txtLevel.text = TextManager.Format("UI_LEVEL_FORMAT", currentHeroData.level);
         }
 
         if (txtStar != null)
         {
-            txtStar.text = $"★{currentHeroData.cardStar}";
+            txtStar.text = TextManager.GetText(heroConfig.rarityTextId);
         }
 
         if (txtCamp != null)
         {
-            txtCamp.text = currentHeroData.heroCamp;
+            txtCamp.text = TextManager.GetText(heroConfig.campTextId);
         }
 
     }

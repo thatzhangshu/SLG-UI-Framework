@@ -36,31 +36,18 @@ public class HeroPanel : UIPanelBase
     private void GenerateMockData()
     {
         heroDataList.Clear();
+        heroDataList.Add(new HeroData(1001, 30, 12500));
+        heroDataList.Add(new HeroData(1002, 28, 11800));
+        heroDataList.Add(new HeroData(1003, 25, 9600));
+        heroDataList.Add(new HeroData(1004, 32, 13200));
+        heroDataList.Add(new HeroData(1005, 22, 8900));
 
-        string[] names =
-        {
-            "赵云", "关羽", "张飞", "马超", "黄忠",
-            "诸葛亮", "周瑜", "吕蒙", "陆逊", "司马懿"
-        };
+        heroDataList.Add(new HeroData(1001, 18, 7600));
+        heroDataList.Add(new HeroData(1002, 20, 8200));
+        heroDataList.Add(new HeroData(1003, 16, 6400));
+        heroDataList.Add(new HeroData(1004, 26, 10400));
+        heroDataList.Add(new HeroData(1005, 14, 5100));
 
-        int cardStar = 5;
-
-        string[] camps = { "魏", "蜀", "吴", "群" };
-
-        for (int i = 0; i < 30; i++)
-        {
-            string heroName = names[i % names.Length];
-
-            HeroData data = new HeroData(
-                i + 1,
-                heroName,
-                1 + i % 50,
-                cardStar,
-                camps[i % camps.Length]
-            );
-
-            heroDataList.Add(data);
-        }
     }
 
     /// <summary>
@@ -75,8 +62,6 @@ public class HeroPanel : UIPanelBase
         {
             HeroCardItem item = Instantiate(heroCardItemPrefab, heroContentRoot);
             item.SetData(data, OnClickHeroItem);
-            Debug.Log($"生成武将：{data.heroId} - {data.heroName}");
-
             heroCardItemList.Add(item);
         }
 

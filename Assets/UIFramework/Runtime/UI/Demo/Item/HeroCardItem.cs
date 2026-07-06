@@ -53,24 +53,31 @@ public class HeroCardItem : MonoBehaviour
             return;
         }
 
+        HeroConfig heroConfig = ConfigManager.GetHeroConfig(heroData.heroId);
+
+        if (heroConfig == null)
+        {
+            return;
+        }
+
         if (txtHeroName != null)
         {
-            txtHeroName.text = heroData.heroName;
+            txtHeroName.text = TextManager.GetText(heroConfig.nameTextId);
         }
 
         if (txtHeroLevel != null)
         {
-            txtHeroLevel.text = $"Lv.{heroData.heroLevel}";
+            txtHeroLevel.text = TextManager.Format("UI_LEVEL_FORMAT", heroData.level);
         }
 
         if (txtHeroCardStar != null)
         {
-            txtHeroCardStar.text = $"★{heroData.cardStar}";
+            txtHeroCardStar.text = TextManager.GetText(heroConfig.rarityTextId);
         }
 
         if (txtHeroCamp != null)
         {
-            txtHeroCamp.text = heroData.heroCamp;
+            txtHeroCamp.text = TextManager.GetText(heroConfig.campTextId);
         }
 
     }
