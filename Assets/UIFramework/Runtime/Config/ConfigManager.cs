@@ -31,9 +31,9 @@ public static class ConfigManager
 
         foreach (string[] columns in rows)
         {
-            if (columns.Length < 5)
+            if (columns.Length < 6)
             {
-                Debug.LogWarning("[ConfigManager] HeroConfig 行格式错误，列数不足");
+                Debug.LogWarning($"[ConfigManager] HeroConfig 行格式错误，列数不足：{columns.Length}，内容：{string.Join(" | ", columns)}");
                 continue;
             }
 

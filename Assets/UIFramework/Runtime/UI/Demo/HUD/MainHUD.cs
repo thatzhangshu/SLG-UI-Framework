@@ -61,16 +61,19 @@ public class MainHUD : UIBase
     private void OpenMailPanel()
     {
         UIManager.Instance.OpenUI(mailPanelPrefab);
+        RedPointManager.ClearSubTree(RedPointKey.Mail);
     }
 
     private void OpenHeroPanel()
     {
         UIManager.Instance.OpenUI(heroPanelPrefab);
+        RedPointManager.ClearSubTree(RedPointKey.Hero);
     }
 
     private void OnClickChat()
     {
         UIManager.Instance.OpenUI(chatPanel);
+        RedPointManager.ClearSubTree(RedPointKey.Chat);
     }
 
     private void OnClickActivity()
@@ -88,6 +91,7 @@ public class MainHUD : UIBase
             UIManager.Instance.ShowToast("点击了取消");
         }
         );
+        RedPointManager.ClearSubTree(RedPointKey.Activity);
     }
 
     private void OnClickBack()

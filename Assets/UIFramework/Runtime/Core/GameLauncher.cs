@@ -23,17 +23,31 @@ public class GameLauncher : MonoBehaviour
     {
         ConfigManager.LoadAll();
 
+        RedPointManager.Initialize();
+
         Debug.Log("[GameLauncher] Core systems initialized.");
     }
 
     private void EnterGame()
     {
-        InitRedPointState();
+        InitMockRedPointData();
 
         if (UIManager.Instance != null && mainHUDPrefab != null)
         {
             UIManager.Instance.OpenUI(mainHUDPrefab);
         }
+    }
+
+    private void InitMockRedPointData()
+    {
+        RedPointManager.SetCount(RedPointKey.MailUnread, 3);
+
+        RedPointManager.SetActive(RedPointKey.HeroNewHero, true);
+
+        RedPointManager.SetActive(RedPointKey.ActivityLoginReward, true);
+        RedPointManager.SetActive(RedPointKey.ActivityDailyTask, true);
+
+        RedPointManager.SetActive(RedPointKey.ChatUnread, false);
     }
 
     private void InitRedPointState()

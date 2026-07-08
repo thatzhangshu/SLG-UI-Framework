@@ -15,7 +15,7 @@ public static class TextManager
 
         List<string[]> rows = ConfigLoader.LoadTSV("Configs/TextConfig");
 
-        Debug.Log($"[TextManager] 加载文本：{rows.Count}");
+        // Debug.Log($"[TextManager] 加载文本：{rows.Count}");
 
         foreach (string[] columns in rows)
         {
@@ -40,7 +40,7 @@ public static class TextManager
             }
 
             textDict[textId] = zhCN;
-            Debug.Log($"[TextManager] 加载文本：{textId} - {zhCN}");
+            // Debug.Log($"[TextManager] 加载文本：{textId} - {zhCN}");
         }
 
         Debug.Log($"[TextManager] 加载完成，文本数量：{textDict.Count}");
