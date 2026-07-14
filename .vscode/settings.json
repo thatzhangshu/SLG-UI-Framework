@@ -1,6 +1,7 @@
 {
   "dotnet.defaultSolution": "SLG-UI-Framework.sln",
   "dotnet.preferCSharpExtension": true,
+  "dotnet.inlayHints.enableInlayHintsForTypes": false,
   "files.exclude": {
     "**/.DS_Store": true,
     "**/.git": true,
