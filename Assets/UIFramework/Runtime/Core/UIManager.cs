@@ -225,7 +225,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            ui.OnDestroy();
+            ui.Dispose();
             Destroy(ui.gameObject);
         }
     }

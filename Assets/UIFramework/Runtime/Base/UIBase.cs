@@ -41,7 +41,10 @@ public class UIBase : MonoBehaviour
     public bool IsAnimating { get; private set; }
 
     public bool IsOpen { get; private set; }
-    
+
+    public bool IsDisposed { get; private set; }
+
+
     public virtual void OnInit()
     {   
         Debug.Log($"{name} OnInit");
@@ -74,10 +77,10 @@ public class UIBase : MonoBehaviour
         Debug.Log($"{name} OnShow");
         IsVisible = true;
         gameObject.SetActive(true); 
-        if (NeedPlayOpenAnimation)
-        {
-            PlayOpenAnimation();
-        }
+        // if (NeedPlayOpenAnimation)
+        // {
+        //     PlayOpenAnimation();
+        // }
     }
 
     public virtual void EnsureCanvasGroup()
@@ -257,10 +260,42 @@ public class UIBase : MonoBehaviour
         IsVisible = false;
         gameObject.SetActive(false); 
     }
-    public virtual void OnDestroy()
+
+    /// <summary>
+    /// 由 UI 框架主动调用。
+    /// 保证每个 UI 实例只释放一次。
+    /// </summary>
+    public void Dispose()
     {
+        if (IsDisposed)
+        {
+            return;
+        }
+
+        IsDisposed = true;
+
+        OnDispose();
+
         IsInitialized = false;
         IsVisible = false;
         IsOpen = false;
+        IsAnimating = false;
+    }
+
+    /// <summary>
+    /// 派生 UI 在这里解绑监听、停止协程、释放资源。
+    /// </summary>
+    protected virtual void OnDispose()
+    {
+
+    }
+
+    /// <summary>
+    /// Unity 自动调用。
+    /// 只作为外部销毁、场景卸载时的安全兜底。
+    /// </summary>
+    protected virtual void OnDestroy()
+    {
+        Dispose();
     }
 }

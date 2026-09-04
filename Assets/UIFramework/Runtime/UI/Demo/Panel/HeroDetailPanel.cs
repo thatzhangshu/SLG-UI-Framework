@@ -80,13 +80,13 @@ public class HeroDetailPanel : UIPanelBase
         UIManager.Instance.Back();
     }
 
-    public override void OnDestroy()
+    protected override void OnDispose()
     {
         if (btnBack != null)
         {
             btnBack.onClick.RemoveListener(OnClickBack);
         }
 
-        base.OnDestroy();
+        base.OnDispose();
     }
 }

@@ -25,6 +25,12 @@ public class GameLauncher : MonoBehaviour
 
         RedPointManager.Initialize();
 
+        RedPointController.Initialize();
+
+        MailDataManager.InitMockData();
+        
+        RedPointController.RefreshAll();
+
         Debug.Log("[GameLauncher] Core systems initialized.");
     }
 

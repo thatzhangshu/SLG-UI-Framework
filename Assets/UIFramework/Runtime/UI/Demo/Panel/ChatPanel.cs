@@ -144,7 +144,7 @@ public class ChatPanel : UIPanelBase
         UIManager.Instance.Back();
     }
 
-    public override void OnDestroy()
+    protected override void OnDispose()
     {
         if (btnBack != null)
         {
@@ -156,6 +156,6 @@ public class ChatPanel : UIPanelBase
             btnSend.onClick.RemoveListener(OnClickSend);
         }
 
-        base.OnDestroy();
+        base.OnDispose();
     }
 }

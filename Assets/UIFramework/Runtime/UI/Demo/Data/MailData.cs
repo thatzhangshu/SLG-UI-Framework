@@ -1,58 +1,51 @@
 /// <summary>
-/// 邮件数据。
-/// 当前阶段使用本地假数据，后续可以替换为服务器下发数据。
+/// 邮件运行时数据。
+/// 
+/// 注意：
+/// MailData 是玩家当前账号下的一封邮件数据，
+/// 属于运行时数据，不是静态配置。
 /// </summary>
 public class MailData
 {
-    /// <summary>
-    /// 邮件唯一 ID。
-    /// </summary>
-    public int mailId;
+    public int MailId { get; private set; }
 
-    /// <summary>
-    /// 邮件类型。
-    /// </summary>
-    public int mailType;
+    public string Title { get; private set; }
 
-    /// <summary>
-    /// 邮件标题。
-    /// </summary>
-    public string title;
+    public string Content { get; private set; }
 
-    /// <summary>
-    /// 发件人。
-    /// </summary>
-    public string sender;
+    public string Sender { get; private set; }
 
-    /// <summary>
-    /// 邮件时间文本。
-    /// </summary>
-    public string timeText;
+    public string TimeText { get; private set; }
 
-    /// <summary>
-    /// 邮件内容。
-    /// </summary>
-    public string content;
+    public bool IsRead { get; private set; }
 
-    /// <summary>
-    /// 是否已读。
-    /// </summary>
-    public bool isRead;
+    public bool HasReward { get; private set; }
 
-    /// <summary>
-    /// 是否有附件。
-    /// </summary>
-    public bool hasAttachment;
-
-    public MailData(int mailId, int mailType, string title, string sender, string timeText, string content, bool isRead, bool hasAttachment)
+    public MailData(
+        int mailId,
+        string title,
+        string content,
+        string sender,
+        string timeText,
+        bool isRead,
+        bool hasReward)
     {
-        this.mailId = mailId;
-        this.mailType = mailType;
-        this.title = title;
-        this.sender = sender;
-        this.timeText = timeText;
-        this.content = content;
-        this.isRead = isRead;
-        this.hasAttachment = hasAttachment;
+        MailId = mailId;
+        Title = title;
+        Content = content;
+        Sender = sender;
+        TimeText = timeText;
+        IsRead = isRead;
+        HasReward = hasReward;
+    }
+
+    public void MarkRead()
+    {
+        IsRead = true;
+    }
+
+    public void ClearReward()
+    {
+        HasReward = false;
     }
 }

@@ -61,7 +61,6 @@ public class MainHUD : UIBase
     private void OpenMailPanel()
     {
         UIManager.Instance.OpenUI(mailPanelPrefab);
-        RedPointManager.ClearSubTree(RedPointKey.Mail);
     }
 
     private void OpenHeroPanel()
@@ -99,11 +98,10 @@ public class MainHUD : UIBase
         UIManager.Instance.Back();
     }
 
-    public override void OnDestroy()
+    protected override void OnDispose()
     {
         UnbindButtons();
-        base.OnDestroy();
-        
+        base.OnDispose();
     }
     private void UnbindButtons()
     {

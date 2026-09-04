@@ -151,7 +151,7 @@ public class ConfirmPopup : UIPopupBase
         base.OnClose();
     }
 
-    public override void OnDestroy()
+    protected override void OnDispose()
     {
         if (btnConfirm != null)
         {
@@ -168,6 +168,6 @@ public class ConfirmPopup : UIPopupBase
             btnClose.onClick.RemoveListener(OnClickCancel);
         }
 
-        base.OnDestroy();
+        base.OnDispose();
     }
 }
