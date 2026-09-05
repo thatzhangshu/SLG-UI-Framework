@@ -5,13 +5,8 @@ using UnityEngine.UI;
 
 /// <summary>
 /// 邮件列表中的单个 Item。
-/// 
-/// 职责：
-/// 1. 显示一封邮件的数据
-/// 2. 响应点击
-/// 3. 不直接修改邮件数据
 /// </summary>
-public class MailItem : MonoBehaviour
+public class MailItem : MonoBehaviour, IUIItemPoolable
 {
     [Header("UI References")]
     [SerializeField] private TMP_Text txtTitle;
@@ -89,5 +84,42 @@ public class MailItem : MonoBehaviour
         }
 
         onClick?.Invoke(currentData);
+    }
+
+    public void OnGetFromPool()
+    {
+        // 当前暂无特殊逻辑。
+        // 后续如果有选中状态、动画状态，可以在这里重置。
+    }
+
+    public void OnReleaseToPool()
+    {
+        currentData = null;
+        onClick = null;
+
+        if (txtTitle != null)
+        {
+            txtTitle.text = string.Empty;
+        }
+
+        if (txtSender != null)
+        {
+            txtSender.text = string.Empty;
+        }
+
+        if (txtTime != null)
+        {
+            txtTime.text = string.Empty;
+        }
+
+        if (unreadNode != null)
+        {
+            unreadNode.SetActive(false);
+        }
+
+        if (rewardNode != null)
+        {
+            rewardNode.SetActive(false);
+        }
     }
 }

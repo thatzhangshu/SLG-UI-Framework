@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// 邮件面板。
@@ -9,66 +8,70 @@ using UnityEngine.UI;
 /// 1. 显示邮件列表
 /// 2. 监听邮件数据变化事件
 /// 3. 响应邮件点击
-/// 
-/// 注意：
-/// MailPanel 不保存真实邮件数据，
-/// 真实数据由 MailDataManager 管理。
+/// 4. 通过 UIItemPool 复用 MailItem
 /// </summary>
 public class MailPanel : UIPanelBase
 {
-    [Header("Popup")]
-    [SerializeField] private MailDetailPopup mailDetailPopupPrefab;
-
     [Header("Mail List")]
     [SerializeField] private Transform mailContentRoot;
     [SerializeField] private MailItem mailItemPrefab;
 
-    [Header("Buttons")]
-    [SerializeField] private Button btnBack;
-    
-    private readonly List<MailItem> itemList = new List<MailItem>();
+    [Header("Popup")]
+    [SerializeField] private MailDetailPopup mailDetailPopupPrefab;
+
+    private UIItemPool<MailItem> mailItemPool;
 
     public override void OnOpen()
     {
         base.OnOpen();
 
+        EnsureMailItemPool();
+
         EventManager.AddListener(GameEvent.MailListChanged, OnMailListChanged);
 
-        BindButtons();
         RefreshMailList();
-    }
-
-    private void BindButtons()
-    {
-        if (btnBack != null)
-        {
-            btnBack.onClick.AddListener(OnClickBack);
-        }
-
-    }
-
-    private void OnClickBack()
-    {
-        UIManager.Instance.Back();
-    }
-
-    protected override void OnDispose()
-    {
-        if (btnBack != null)
-        {
-            btnBack.onClick.RemoveListener(OnClickBack);
-        }
-
-        base.OnDispose();
     }
 
     public override void OnClose()
     {
         EventManager.RemoveListener(GameEvent.MailListChanged, OnMailListChanged);
 
-        ClearMailItems();
+        ReleaseMailItems();
 
         base.OnClose();
+    }
+
+    protected override void OnDispose()
+    {
+        if (mailItemPool != null)
+        {
+            mailItemPool.Clear();
+            mailItemPool = null;
+        }
+
+        base.OnDispose();
+    }
+
+    private void EnsureMailItemPool()
+    {
+        if (mailItemPool != null)
+        {
+            return;
+        }
+
+        if (mailItemPrefab == null)
+        {
+            Debug.LogError("[MailPanel] mailItemPrefab is null.");
+            return;
+        }
+
+        if (mailContentRoot == null)
+        {
+            Debug.LogError("[MailPanel] mailContentRoot is null.");
+            return;
+        }
+
+        mailItemPool = new UIItemPool<MailItem>(mailItemPrefab, mailContentRoot);
     }
 
     private void OnMailListChanged()
@@ -80,44 +83,45 @@ public class MailPanel : UIPanelBase
 
     private void RefreshMailList()
     {
-        ClearMailItems();
+        EnsureMailItemPool();
 
-        if (mailContentRoot == null)
+        if (mailItemPool == null)
         {
-            Debug.LogError("[MailPanel] mailContentRoot is null.");
             return;
         }
 
-        if (mailItemPrefab == null)
-        {
-            Debug.LogError("[MailPanel] mailItemPrefab is null.");
-            return;
-        }
+        mailItemPool.ReleaseAll();
 
         List<MailData> mails = MailDataManager.GetMailList();
 
         for (int i = 0; i < mails.Count; i++)
         {
-            MailItem item = Instantiate(mailItemPrefab, mailContentRoot);
-            item.SetData(mails[i], OnClickMailItem);
+            MailItem item = mailItemPool.Get();
 
-            itemList.Add(item);
+            if (item == null)
+            {
+                continue;
+            }
+
+            item.SetData(mails[i], OnClickMailItem);
+            item.transform.SetSiblingIndex(i);
         }
+        
+        mailItemPool.DebugPrint("MailItemPool");
 
         Debug.Log($"[MailPanel] RefreshMailList. Count = {mails.Count}");
     }
 
-    private void ClearMailItems()
+    private void ReleaseMailItems()
     {
-        for (int i = 0; i < itemList.Count; i++)
+        if (mailItemPool == null)
         {
-            if (itemList[i] != null)
-            {
-                Destroy(itemList[i].gameObject);
-            }
+            return;
         }
 
-        itemList.Clear();
+        mailItemPool.ReleaseAll();
+
+        mailItemPool.DebugPrint("MailItemPool");
     }
 
     private void OnClickMailItem(MailData mailData)
@@ -135,7 +139,7 @@ public class MailPanel : UIPanelBase
             return;
         }
 
-        MailDetailPopup popup = UIManager.Instance.OpenUI(mailDetailPopupPrefab);
+        MailDetailPopup popup = UIManager.Instance.OpenUI<MailDetailPopup>(UIName.MailDetailPopup);
 
         if (popup == null)
         {

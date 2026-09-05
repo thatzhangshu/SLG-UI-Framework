@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
     [Header("Common UI")]
     [SerializeField] private Toast toastPrefab;
     [SerializeField] private ConfirmPopup confirmPopupPrefab;
+    private IUIResourceLoader uiResourceLoader;
 
     /// <summary>
     /// 当前已打开UI字典。
@@ -65,6 +66,10 @@ public class UIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        UIConfigManager.Initialize();
+
+        uiResourceLoader = new ResourcesUIResourceLoader();
     }
     /// <summary>
     /// 打开UI。
@@ -164,6 +169,33 @@ public class UIManager : MonoBehaviour
     public T OpenUI<T>(T uiPrefab) where T : UIBase
     {
         return OpenUI(uiPrefab, null);
+    }
+
+    /// <summary>
+    /// 通过 UIName 打开 UI。
+    /// </summary>
+    public T OpenUI<T>(string uiName) where T : UIBase
+    {
+        UIConfigItem config = UIConfigManager.GetConfig(uiName);
+
+        if (config == null)
+        {
+            return null;
+        }
+
+        if (uiResourceLoader == null)
+        {
+            uiResourceLoader = new ResourcesUIResourceLoader();
+        }
+
+        T uiPrefab = uiResourceLoader.LoadUI<T>(config.PrefabPath);
+
+        if (uiPrefab == null)
+        {
+            return null;
+        }
+
+        return OpenUI(uiPrefab);
     }
     
     /// <summary>
